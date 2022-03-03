@@ -2,6 +2,7 @@ package com.programming.controller;
 
 import com.programming.services.IpInfoService;
 import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class HomeController {
     }
 
     @RequestMapping("/location")
-    public String showLocation(ModelMap modelMap) throws IOException {
+    public String showLocation(ModelMap modelMap) throws IOException, ParseException {
 
         String ip = ipInfoService.getIp();
         String data = ipInfoService.getData(ip);
@@ -64,7 +65,8 @@ public class HomeController {
         String dnsMapLink = "https://www.google.com/maps/?q="
                 +dnsObj.getString("loc");
 
-        modelMap.addAttribute("dnsIp",ip);
+        String dnsCountryImage = ipInfoService.getCountryImage(dnsObj.getString("country"));
+        modelMap.addAttribute("dnsIp","8.8.8.8");
         modelMap.addAttribute("dnsHostName",dnsObj.getString("hostname"));
         modelMap.addAttribute("dnsAnyCast",dnsObj.getBoolean("anycast"));
         modelMap.addAttribute("dnsCity",dnsObj.getString("city"));
@@ -75,7 +77,7 @@ public class HomeController {
         modelMap.addAttribute("dnsPostal",dnsObj.getString("postal"));
         modelMap.addAttribute("dnsMapLink",dnsMapLink);
         modelMap.addAttribute("dnsTimezone",dnsObj.getString("timezone"));
-
+        modelMap.addAttribute("dnsCountryImage",dnsCountryImage);
 
         return "location";
 
